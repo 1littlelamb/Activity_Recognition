@@ -1,4 +1,4 @@
-# Feature extraction and model making
+# Feature extraction and model making - Felix Slothower
 
 setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/final_project')
 
