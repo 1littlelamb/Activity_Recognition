@@ -1,0 +1,126 @@
+\documentclass[12pt]{article}
+
+\usepackage[]{graphicx}
+\usepackage[]{color}
+\usepackage{alltt}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+% Set page margins
+\usepackage[top=100pt,bottom=100pt,left=68pt,right=66pt]{geometry}
+
+% Package used for placeholder text
+\usepackage{lipsum}
+
+% Prevents LaTeX from filling out a page to the bottom
+\raggedbottom
+
+% Make the sections delineated by roman numerals
+\renewcommand{\thesection}{\Roman{section}}
+
+% All page numbers positioned at the bottom of the page
+\usepackage{fancyhdr}
+\fancyhf{} % clear all header and footers
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt} % remove the header rule
+\pagestyle{fancy}
+
+% Make new chapters on same page
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
+
+% Changes the style of chapter headings
+\usepackage{titlesec}
+\titleformat{\chapter}
+   {\normalfont\LARGE\bfseries}{\thechapter.}{1em}{}
+% Change distance between chapter header and text
+\titlespacing{\chapter}{0pt}{40pt}{2\baselineskip}
+
+% Adds table captions above the table per default
+\usepackage{float}
+\floatstyle{plaintop}
+\restylefloat{table}
+
+% Adds space between caption and table
+\usepackage[tableposition=top]{caption}
+
+% Adds hyperlinks to references and ToC
+\usepackage{hyperref}
+\hypersetup{hidelinks,linkcolor = black} % Changes the link color to black and hides the hideous red border that usually is created
+
+% If multiple images are to be added, a folder (path) with all the images can be added here 
+\graphicspath{ {images/} }
+
+% Separates the first part of the report/thesis in Roman numerals
+
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+%%% Selects the language to be used for the first couple of pages
+
+% Adds the title page
+\begin{titlepage}
+	\clearpage\thispagestyle{empty}
+	\centering
+	\vspace{2cm}
+
+	% Titles
+	{\large Machine Learning MAE 182 \par}
+	\vspace{4cm}
+	{\Huge \textbf{Activity Recognition using the WISDM Dataset}} \\
+	\vspace{1cm}
+	{\large \textbf{Felix Slothower} \par}
+	\vspace{3cm}
+	{\normalsize Prof. Dabdub  \par}
+	\vspace{2cm}
+
+    \vspace{2cm}
+    
+  \includegraphics[width=4cm]{uci_seal.pdf}  
+  
+	% Information about the University
+	{\normalsize Department of Mechanical Engineering \\ 
+		University of California - Irvine \par}
+		
+	% Set the date
+	{\normalsize 02-24-2020 \par}
+	
+	\pagebreak
+
+\end{titlepage}
+
+% Text body starts here!
+\begin{abstract}
+   As smart watches becoming a common accessory among consumers, new opportunities arise in the activity recognition space. Machine Learning tools have the potential to reference both wrist and hip motion simultaneously by combining smart watch and phone accelerometer data. The combination of the two data streams are explored as a potentially major improvement to activity recognition accuracy with improved sensitvity to more nuanced activities such as eating soup versus eating a sandwich. The dataset provided for this project comes from the WISDM Labratories and is offered as public domain. NAME THE FEATURES. AND MODELS USED. AND THEN WRAP UP QUICKLY WITH RESULTS!
+\end{abstract}
+
+\section{Intro}
+  Activity recognition has many applications in the health and wellness sector 
+\section{Methodology}
+\section{Results and Discussion}
+\section{Conclusion}
+\section{Acknowledgements}
+
+
+
+
+
+
+
+\pagebreak
+
+
+% Adding a bibliography if citations are used in the report
+\bibliography{BiBTeXexempel.bib}
+\bibliographystyle{plain}
+
+% Adds reference to the Bibliography in the ToC
+
+\end{document}
