@@ -5,10 +5,11 @@
 \usepackage{alltt}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\setcounter{secnumdepth}{3}
-\setcounter{tocdepth}{3}
-\setlength{\parskip}{\smallskipamount}
-\setlength{\parindent}{0pt}
+\usepackage[english]{babel}
+
+\usepackage[backend = biber]{biblatex}
+
+\bibliography{references}
 
 % Set page margins
 \usepackage[top=100pt,bottom=100pt,left=68pt,right=66pt]{geometry}
@@ -20,7 +21,7 @@
 \raggedbottom
 
 % Make the sections delineated by roman numerals
-\renewcommand{\thesection}{\Roman{section}}
+%\renewcommand{\thesection}{\Roman{section}}
 
 % All page numbers positioned at the bottom of the page
 \usepackage{fancyhdr}
@@ -28,19 +29,6 @@
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0pt} % remove the header rule
 \pagestyle{fancy}
-
-% Make new chapters on same page
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
-\makeatother
-
-% Changes the style of chapter headings
-\usepackage{titlesec}
-\titleformat{\chapter}
-   {\normalfont\LARGE\bfseries}{\thechapter.}{1em}{}
-% Change distance between chapter header and text
-\titlespacing{\chapter}{0pt}{40pt}{2\baselineskip}
 
 % Adds table captions above the table per default
 \usepackage{float}
@@ -50,18 +38,14 @@
 % Adds space between caption and table
 \usepackage[tableposition=top]{caption}
 
-% Adds hyperlinks to references and ToC
-\usepackage{hyperref}
-\hypersetup{hidelinks,linkcolor = black} % Changes the link color to black and hides the hideous red border that usually is created
-
 % If multiple images are to be added, a folder (path) with all the images can be added here 
-\graphicspath{ {images/} }
-
-% Separates the first part of the report/thesis in Roman numerals
+\graphicspath{ {C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/images/} }
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
+
+%\SweaveOpts{concordance=TRUE}
 
 %%% Selects the language to be used for the first couple of pages
 
@@ -96,31 +80,35 @@
 
 \end{titlepage}
 
-% Text body starts here!
+% ABSTRACT
 \begin{abstract}
    As smart watches becoming a common accessory among consumers, new opportunities arise in the activity recognition space. Machine Learning tools have the potential to reference both wrist and hip motion simultaneously by combining smart watch and phone accelerometer data. The combination of the two data streams are explored as a potentially major improvement to activity recognition accuracy with improved sensitvity to more nuanced activities such as eating soup versus eating a sandwich. The dataset provided for this project comes from the WISDM Labratories and is offered as public domain. NAME THE FEATURES. AND MODELS USED. AND THEN WRAP UP QUICKLY WITH RESULTS!
 \end{abstract}
 
-\section{Intro}
-  Activity recognition has many applications in the health and wellness sector 
+\section{Introduction}
+
+Activity recognition has many applications in the health and wellness sector. Being able to detect certain conditions quickly can be critical to the effectiveness of the respective treatment measures like is with the case of Parkinson's disease \cite{Hauser2010Mar}. \par
+
+With the advent of Microelectromechanical Systems(MEMS), information about the linear and angular acceleration of an object in discrete time can be obtained using a silicon wafer small enough to fit on the back of a human nail \cite{Iannacci2017}. Inclusion of such sensors has become ubiquitous in mobile electronic devices and has led to an explosion in the amount of accerlation and gyroscopic data available. The raw signals coming from these sensors can be used used by machine learning algorithms to perform activity recogninition, giving abstract and superficial discrete time data meaning. These algorithms can be tailored to detect discrete activities such as a tremor in the hand which might be associated with Parkinson's disease, providing advanced diagnosis as discussed earlier. \par
+
+The objective of this project is to use the digital signals provided by these MEMS sensors to determine the types of activities being conducted by their users. Multiple machine learning models are used for the classification of activities including: k-Nearest Neighbors, Random Forests, Support Vector Machines and Linear and Quadtratic Discriminant Analysis. \par
+
+The dataset being used for this project comes from the WISDM Lab and has been made available under public domain \cite{Kwapisz2010}. It is a compilation of raw accelerometer and gyroscopic data recorded from both the phone and watch simultaneously. The dataset has over 45 million datapoints across 51 different subjects each performing 18 different activities. This vast dataset provides more than enough information however it being a raw data signal, key features such as variance and extrema must be extracted in order to improve interpitability. 
+
 \section{Methodology}
+
 \section{Results and Discussion}
+
+
 \section{Conclusion}
-\section{Acknowledgements}
-
-
-
-
-
+\subsection{Acknowledgements}
 
 
 \pagebreak
 
 
 % Adding a bibliography if citations are used in the report
-\bibliography{BiBTeXexempel.bib}
-\bibliographystyle{plain}
+\printbibliography
 
-% Adds reference to the Bibliography in the ToC
 
 \end{document}
