@@ -1,11 +1,15 @@
 # Initial Plotting of the Data to get a better understanding of what is happening
 
+setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/')
+
 # Loading in necessary libraries
 pacman::p_load(rio, dplyr, tidyr, ggplot2, ggthemes, corrplot, corrgram, gridExtra, egg)
-source('functions/magnitude.R')
+source('functions/complex_magnitude.R')
 
 # Loading in the data, if necessary
-df <- readRDS('./../../wisdm_dataset_list.rds')
+df <- readRDS('./../../rds_data/wisdm_dataset_list.rds')
+
+data2 <- readRDS('./../../rds_data/wisdm_dataset_df.rds')
 
 # Creating the color palette for coloring the lines
 my_colors <- c('#942e2e','#94462e','#946b2e','#94932e','#7c942e','#34942e','#2e9450','#2e948a','#2e7094',
@@ -69,32 +73,26 @@ print(ggplot(pl1.1[sample$indices,]) + geom_line(aes(x = sys_time, y = x_axis)))
 
 ### 2. How long each activity is for a user #######################################################
 
+# This has been made obsolete since everything has been trimmed to be the same length
 pl2 <- ggplot(df$phone_accel$p43, aes(x=factor(activity))) + 
   geom_bar(aes(fill = factor(activity)),
            show.legend = FALSE)
 
 print(pl2)
 
-### 3. The x accel density for all tasks ####################################################################
+### 3. The x accel density for all tasks and one user #############################################
 
-x.accel_tasks <- function(df, na.rm = TRUE, ...){
-  
-  # Make the initial plot
-  pl3 <- ggplot(filter(df$phone_accel[[subject]], activity == 'A'), aes(x_axis)) + 
-    geom_density(color = my_colors[18])
-  
-  # Add all the additional plots to pl3
-  for (i in 2:18) {
-    pl3 <- pl3 + geom_density(data = filter(df$phone_accel[[subject]], activity == LETTERS[i]),
-                              color = my_colors[i])
-  }
-  pl3 <- pl3 + scale_x_continuous(limits = c(-8,6))
-  
-  # Printing the plot, couldn't figure out the return() method
-  print(pl3)
-}
-
-x.accel_tasks(df)
+pl3.2_data <- data %>% filter(User == 1626) %>% dplyr::select(Activity, PAX)
+pl3.2 <- ggplot(pl3.2_data) + 
+         geom_density(aes(PAX, fill = Activity),
+                      alpha = 1) + 
+         scale_x_continuous(limits = c(1,7)) +
+         theme_fivethirtyeight() + 
+         theme(axis.title = element_text(), axis.title.y = element_blank(),
+               axis.text.y = element_blank(), legend.position = 'none') +
+         ggtitle('Magnitude of Phone Acceleration in the x-Axis') +
+         xlab('Magnitude') 
+print(pl3.2)
 
 ### 4. The xyz accel vs sys_time of a given task ####################################################
 

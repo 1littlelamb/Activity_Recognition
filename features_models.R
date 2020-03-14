@@ -40,9 +40,9 @@ pb.axis.var <- progress_bar$new(total = ceiling((dim(lwt)[1] - win + 1)/by))
 usr   <- lwt$User     %>% rollApply(win, most, by) %>% as.data.frame() %>% 'names<-'('User') 
 actvt <- lwt$Activity %>% rollApply(win,  max, by) %>% as.data.frame() %>% 'names<-'('Activity')
 
+means <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, colMeans, by)
 ffts  <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win,  max.fft, by) ; pb.max.fft$terminate()
 vars  <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, axis.var, by) ; pb.axis.var$terminate()
-means <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, colMeans, by)
 extrm <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win,  extrema, by) ; pb.extrm$terminate()
 #TODO include more features
 
