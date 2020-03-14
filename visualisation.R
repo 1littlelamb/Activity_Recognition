@@ -5,7 +5,7 @@ pacman::p_load(rio, dplyr, tidyr, ggplot2, ggthemes, corrplot, corrgram, gridExt
 source('functions/magnitude.R')
 
 # Loading in the data, if necessary
-df <- readRDS('wisdm_dataset_list.rds')
+df <- readRDS('./../../wisdm_dataset_list.rds')
 
 # Creating the color palette for coloring the lines
 my_colors <- c('#942e2e','#94462e','#946b2e','#94932e','#7c942e','#34942e','#2e9450','#2e948a','#2e7094',
@@ -248,9 +248,10 @@ print(pl7)
 #         type = 'scatter3d',
 #         mode = 'markers',
 #         color = task_A$z_axis) 
-### A nice toothbrush fourier transform ############
+### A nice fourier transform ############
 df2 <- import('loading_wisdm_df.R')
 
-q <- slice(data, 1100000:1100200)
-f <- fft(as.matrix(dplyr::select(q, -Activity, -User, -Time)))
-plot(seq(1,200,1),magnitude(f[-1,1]),'h')
+q <- data %>% filter(Activity == 'G') %>% slice(20000:20200)
+f <- fft(as.matrix(dplyr::select(q, -Activity, -User, -Time, PAX)))
+plot(seq(1,200,1),complex_magnitude(f[-1,1]),'h')
+

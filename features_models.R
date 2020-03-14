@@ -1,20 +1,20 @@
 # Feature extraction and model making - Felix Slothower
 
-setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/final_project')
+setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/')
 
 pacman::p_load(rio, dplyr, tidyr, caTools, caret, e1071, MASS, zoo, class, randomForest, progress)
 source('functions/lighten.R')
 source('functions/differences.R')
 source('functions/user_split.R')
 source('functions/most.R')
-source('functions/magnitude.R')
+source('functions/magnitudes.R')
 source('functions/max_fft.R')
 source('functions/axis_var.R')
 source('functions/extrema.R')
 source('functions/roll_apply.R')
 
 # Import the data
-data <- import("wisdm_dataset_df.rds")
+data <- import("./../../rds_data/wisdm_dataset_df.rds")
 
 # I ultimately want to just write
 # funs <- list(mean = mean,
@@ -25,32 +25,35 @@ data <- import("wisdm_dataset_df.rds")
 # features <- lapply(funs, function(f) f(lwt))
 
 # Creating a lightweight sample of the data
-lwt <- lighten(data, c("Q", "R"), samples = 2000) %>% dplyr::select(-Time)
+lwt <- lighten(data, c("A", "B", "D"), samples = 2000) %>% dplyr::select(-Time)
 
 # Creating the Mean feature
 #difference <- t(apply(as.matrix(means), 1, differences)) %>% as.data.frame()
 win <- 200
 by <- 100
 
+pb.mag      <- progress_bar$new(total = ceiling((dim(lwt)[1] - win + 1)/by))
+pb.extrm    <- progress_bar$new(total = ceiling((dim(lwt)[1] - win + 1)/by))
 pb.max.fft  <- progress_bar$new(total = ceiling((dim(lwt)[1] - win + 1)/by))
 pb.axis.var <- progress_bar$new(total = ceiling((dim(lwt)[1] - win + 1)/by))
-pb.extrm    <- progress_bar$new(total = ceiling((dim(lwt)[1] - win + 1)/by))
 
 usr   <- lwt$User     %>% rollApply(win, most, by) %>% as.data.frame() %>% 'names<-'('User') 
 actvt <- lwt$Activity %>% rollApply(win,  max, by) %>% as.data.frame() %>% 'names<-'('Activity')
 
-means <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, colMeans, by)
 ffts  <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win,  max.fft, by) ; pb.max.fft$terminate()
 vars  <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, axis.var, by) ; pb.axis.var$terminate()
+means <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, colMeans, by)
 extrm <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win,  extrema, by) ; pb.extrm$terminate()
 #TODO include more features
 
-names(extrm) <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.ext')
-names(vars)  <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.var')
-names(ffts)  <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.mf')
-names(means) <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.E')
+E.mag <- means %>% magnitudes() ; pb.mag$terminate()
 
-features <- cbind(means, ffts, vars, extrm, actvt, usr)
+names(E.mag) <- paste0(c("PA", "PG", "WA", "WG"), '.Emag')
+names(ffts)  <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.mf')
+names(vars)  <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.var')
+names(extrm) <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.ext')
+
+features <- cbind(E.mag, ffts, vars, extrm, actvt, usr)
 actvt_and_usr_cols <- c(dim(features)[2]-1,dim(features)[2])
 features[,-actvt_and_usr_cols] <- scale(features[,-actvt_and_usr_cols])
 
@@ -102,23 +105,23 @@ predictions_svm_poly <- predict(model_svm_poly, test.data.svm)
 
 (svm_acc_poly2 <- mean(predictions_svm_poly == test.response.svm))
 
-tune.results <- tune(svm, train.data.svm[,-49], train.response.svm, kernel = 'polynomial',
-                     ranges = list(cost = 10^(-1:2), degree = c(1:4)))
-
-pl1 <- plot(tune.results, main = "Performance of SVM with Polynomial Kernel", 
-            xlab = 'Cost', ylab = 'Degree')
-
-tune.results.z1 <- tune(svm, train.data.svm[,-49], train.response.svm, kernel = 'polynomial',
-                        ranges = list(cost = seq(10,25,5), degree = c(2:4)))
-
-pl2 <- plot(tune.results.z1, main = "Performance of SVM with Polynomial Kernel", 
-            xlab = 'Cost', ylab = 'Degree')
-
-tune.results.z2 <- tune(svm, train.data.svm[,-49], train.response.svm, kernel = 'polynomial',
-                        ranges = list(cost = seq(1,10,2), degree = c(2:4)))
-
-pl3 <- plot(tune.results.z2, main = "Performance of SVM with Polynomial Kernel", 
-            xlab = 'Cost', ylab = 'Degree')
+#tune.results <- tune(svm, train.data.svm[,-49], train.response.svm, kernel = 'polynomial',
+#                     ranges = list(cost = 10^(-1:2), degree = c(1:4)))
+#
+#pl1 <- plot(tune.results, main = "Performance of SVM with Polynomial Kernel", 
+#            xlab = 'Cost', ylab = 'Degree')
+#
+#tune.results.z1 <- tune(svm, train.data.svm[,-49], train.response.svm, kernel = 'polynomial',
+#                        ranges = list(cost = seq(10,25,5), degree = c(2:4)))
+#
+#pl2 <- plot(tune.results.z1, main = "Performance of SVM with Polynomial Kernel", 
+#            xlab = 'Cost', ylab = 'Degree')
+#
+#tune.results.z2 <- tune(svm, train.data.svm[,-49], train.response.svm, kernel = 'polynomial',
+#                        ranges = list(cost = seq(1,10,2), degree = c(2:4)))
+#
+#pl3 <- plot(tune.results.z2, main = "Performance of SVM with Polynomial Kernel", 
+#            xlab = 'Cost', ylab = 'Degree')
 
 # These ended up being the best and were also the default values. Welp, worth a shot.
 model_svm_poly_tuned <- svm(Activity ~ ., train.data.svm, kernel = 'polynomial', degree = 3, cost = 1)
