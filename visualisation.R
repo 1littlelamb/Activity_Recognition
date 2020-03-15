@@ -1,19 +1,32 @@
 # Initial Plotting of the Data to get a better understanding of what is happening
-
 setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/')
 
+# Loading in custom font from local machine
+extrafont::loadfonts()
+extrafont::font_import(path = "fonts/", pattern = "lmroman*")
+windowsFonts(`LM Roman 10` = windowsFont('LM Roman 8'))
+
 # Loading in necessary libraries
-pacman::p_load(rio, dplyr, tidyr, ggplot2, ggthemes, corrplot, corrgram, gridExtra, egg)
+pacman::p_load(rio, dplyr, tidyr, ggplot2, ggthemes, corrplot,
+               corrgram, gridExtra, egg, Cairo, knitr, grid, lattice)
+
 source('functions/complex_magnitude.R')
+opts_chunk$set(dev = 'CairoPDF')
 
 # Loading in the data, if necessary
 df <- readRDS('./../../rds_data/wisdm_dataset_list.rds')
 
-data2 <- readRDS('./../../rds_data/wisdm_dataset_df.rds')
+data <- readRDS('./../../rds_data/wisdm_dataset_df.rds')
 
 # Creating the color palette for coloring the lines
+master_color <- "#ff5828"
+
 my_colors <- c('#942e2e','#94462e','#946b2e','#94932e','#7c942e','#34942e','#2e9450','#2e948a','#2e7094',
                '#2e4694','#442e94','#612e94','#852e94','#942e70','#942e46','#942e2e','#2c8130','#2c3081')
+
+user_gradient <- c("#ff1919", "#ff682b", "#ff201a", "#ff702d", "#ff281c", "#ff782f", "#ff301e",
+                   "#ff8031", "#ff3820", "#ff8833", "#ff4022", "#ff9035", "#ff4824", "#ff9837",
+                   "#ff5026", "#ffa039", "#ff5828", "#ffa83b", "#ff602a", "#ffb03d")
 
 activity_dict <- data.frame(description = c(
   "Walking",
@@ -36,6 +49,7 @@ activity_dict <- data.frame(description = c(
   "Folding Clothes"),
   alphabet = LETTERS[1:19][-14])
 
+
 # Task Selection
 selected_activity <- 'G'
 activity_description <- as.character(filter(activity_dict, alphabet == selected_activity)$description)
@@ -55,9 +69,11 @@ sample_generator <- function(start_time, interval){
               interval = interval,
               start_index = start_index,
               end_index = end_index,
-              n = n))
+              n = n,
+              delT = dt))
 }
 
+sample <- sample_generator(10, 10)
 
 ### 1. How different users logged their data via sys_time #########################################
 
@@ -74,156 +90,85 @@ print(ggplot(pl1.1[sample$indices,]) + geom_line(aes(x = sys_time, y = x_axis)))
 ### 2. How long each activity is for a user #######################################################
 
 # This has been made obsolete since everything has been trimmed to be the same length
+# It was helpful at first in noticing the inconsistent activity duration
 pl2 <- ggplot(df$phone_accel$p43, aes(x=factor(activity))) + 
   geom_bar(aes(fill = factor(activity)),
            show.legend = FALSE)
 
 print(pl2)
 
-### 3. The x accel density for all tasks and one user #############################################
+### 3. The x accel density for all tasks and one user ############################################
 
-pl3.2_data <- data %>% filter(User == 1626) %>% dplyr::select(Activity, PAX)
-pl3.2 <- ggplot(pl3.2_data) + 
-         geom_density(aes(PAX, fill = Activity),
-                      alpha = 1) + 
+pl3_data <- data %>% filter(User == 1626) %>% dplyr::select(Activity, PAX)
+pl3 <- ggplot(pl3_data) + 
+         geom_density(aes(PAX, fill = Activity, color = Activity),
+                      alpha = 0.8) + 
          scale_x_continuous(limits = c(1,7)) +
-         theme_fivethirtyeight() + 
+         theme_fivethirtyeight(base_family = 'LM Roman 10') + 
          theme(axis.title = element_text(), axis.title.y = element_blank(),
                axis.text.y = element_blank(), legend.position = 'none') +
-         ggtitle('Magnitude of Phone Acceleration in the x-Axis') +
-         xlab('Magnitude') 
-print(pl3.2)
+         labs(title = 'One User | All Activities',
+              subtitle = 'Phone Acceleration in the x-Axis') +
+         xlab('Acceleration') 
+print(pl3)
+ggsave('./../../images/all_actvts.pdf', pl3, device = cairo_pdf)
 
-### 4. The xyz accel vs sys_time of a given task ####################################################
+### 4. The xyz accel vs sys_time of a given task #################################################
 
-xyz.accel_sys.time <- function(df, na.rm = TRUE, ...){
-  
-  # Making the graph
-  pl4 <- ggplot(subset(df$phone_accel[[subject]], activity == selected_activity),
-               aes(z_axis)) + 
-    
-    geom_density(color = my_colors[5]) + 
-    
-    geom_density(data = subset(df$phone_accel[[subject]], activity == selected_activity),
-                aes(y_axis),
-                color = my_colors[1]) + 
-    
-    geom_density(data = subset(df$phone_accel[[subject]], activity == selected_activity),
-                aes(x_axis),
-                color = my_colors[12]) +
-    theme_fivethirtyeight()
-  
-  # Printing the graph
-  print(pl4)
-    
-}
+pl4_data <- data %>% filter(Activity == 'E') %>% filter(User < 1620) %>% dplyr::select(User, PAX)
+pl4 <- ggplot(pl4_data) + 
+       geom_density(aes(PAX, fill = factor(User), color = factor(User)),
+                    alpha = 0.8) +
+       scale_x_continuous(limits = c(-10,6)) +
+       scale_fill_manual(values = user_gradient) + 
+       scale_color_manual(values = user_gradient) +
+       theme_fivethirtyeight(base_family = 'LM Roman 10') + 
+       theme(axis.title = element_text(), axis.title.y = element_blank(),
+             axis.text.y = element_blank(), legend.position = 'none') +
+       labs(title = 'Twenty Different Users | Activity: Standing',
+            subtitle = 'Phone Acceleration in the x-Axis') +
+       xlab('Acceleration') 
+print(pl4)
+ggsave('./../../images/user_standing.pdf', pl4, device = cairo_pdf)
 
-xyz.accel_sys.time(df)
+### 5. The Time Domain for xyz accel of a given task #############################################
+pl5_data <- data %>% filter(Activity == 'G') %>% filter(User == 1628) %>% 
+  dplyr::select(PAX) %>% slice(1600:1800)
 
-### 5. The Time Domain for xyz accel of a given task #########################################################
+pl5 <- ggplot(pl5_data) + 
+  geom_line(aes(seq(0,10, 1/20), PAX), color = master_color) +
+  theme_fivethirtyeight(base_family = 'LM Roman 10') +
+  theme(axis.title = element_text(), legend.position = 'none') +
+  labs(title = 'Digital Signal') +
+  xlab('Time (sec)') + ylab('Acceleration') 
 
-plot_time_domain <- function(){
-  
-  plot5_df <- df$watch_gyro[[subject]] %>% 
-    filter(activity == selected_activity) %>%
-    dplyr::select(sys_time, x_axis, y_axis, z_axis) %>% 
-    slice(sample$indices)
-  
-  colnames(plot5_df) <- c("Sys.Time","x-Axis", "y-Axis", "z-Axis")
-  plot5_df <- pivot_longer(plot5_df, c("x-Axis", "y-Axis", "z-Axis"), names_to = "axes", values_to = "value")
-  
-  pl5 <- ggplot(plot5_df) + 
-    geom_line(aes(x = Sys.Time,
-                  y = value,
-                  group = axes,
-                  color = axes),
-              size = 1) + 
-    facet_wrap( ~ axes, nrow = 3) +
-    labs(title = 'Time Domain') +
-    theme_fivethirtyeight()
-  
-  return(pl5)
-}
-
-pl5 <- plot_time_domain()
+print(pl5)
 
 
-### 6. The Frequency Domain of all three axes ################################################################
+### 6. The Frequency Domain of all three axes ####################################################
 
-frequency_domain <- function(){
-  
-  # Creating the frequency array
-  intervals <- seq(0, sample$interval, by = dt)
-  freq_array <- 1:length(intervals)/interval
-  
-  plot6_df <- df$watch_gyro[[subject]] %>% 
-              filter(activity == selected_activity) %>%
-              dplyr::select(x_axis, y_axis, z_axis) %>% 
-              sapply(fft) %>% 
-              as.data.frame() %>% 
-              slice(sample$indices)
-  
-  for (i in 1:dim(plot6_df)[2]){
-    plot6_df[,i] <- as.vector(sapply(plot6_df[,i], function(x) magnitude(x, n = n)))
-  }  
-  
-  plot6_df <- cbind.data.frame(plot6_df, freq_array)
-  
-  names(plot6_df) <- c('x-Axis','y-Axis','z-Axis', 'freq_array')
-  plot6_df <- pivot_longer(plot6_df, c('x-Axis','y-Axis','z-Axis'),
-                           names_to = 'axes',
-                           values_to = 'value')
-  
-  
-  pl6 <- ggplot(plot6_df[1:(length(plot6_df$freq_array)/2),]) + 
-                geom_bar(aes(x = freq_array,
-                             y = value,
-                             group = axes,
-                             fill = axes),
-                         stat = 'identity',
-                         width = 0.02) + 
-                facet_wrap( ~ axes, nrow = 3) +
-                labs(title = 'Frequency Domain') + 
-                theme(legend.position = 'none') +
-                theme_fivethirtyeight()
+pl6_fft <- data %>% filter(Activity == 'G') %>% filter(User == 1628) %>% 
+           dplyr::select(PAX) %>% slice(1600:1800) %>%
+           as.matrix() %>% fft() %>% sapply(function(x) complex_magnitude(m = x, n = sample$n)) %>% 
+           as.data.frame() %>% slice(2:101) %>% 
+           'names<-'('freq')
 
-  return(pl6)
-}
+pl6 <- ggplot(pl6_fft) + 
+  geom_bar(aes(seq(1,100), freq), fill = master_color, stat = 'identity', width = 1) +
+  theme_fivethirtyeight(base_family = 'LM Roman 10') +
+  theme(axis.title = element_text(), axis.text.y = element_blank(), legend.position = 'none') +
+  labs(title = 'Fourier Transform') +
+  xlab('Frequency (Hz)') + ylab('Intensity') 
 
-pl6 <- frequency_domain()
+print(pl6)
+ggplot2::ggsave('./../../images/fft_toothbrush.pdf', pl6, device = cairo_pdf)
 
-### 7. Combining the Frequency and Time Domain ###############################################################
+### 7. Combining the Frequency and Time Domain ###################################################
 
-grid.arrange(pl5, pl6,
-             top = paste('Activity -',activity_description),
-             nrow = 1)
+grid1 <- grid.arrange(pl5, pl6, nrow = 1)
+ggsave('./../../images/fft_grid.pdf', grid1, device = cairo_pdf)
 
-
-### 8. Plotting the Fourier Transform of short time interval #########################################
-
-# Still not entirely sure how this works
-# I want this line to be smooth kinda like a density plot.
-
-plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
-  plot.data  <- cbind(0:(length(X.k)-1), Mod(X.k))
-  
-  # TODO: why this scaling is necessary?
-  plot.data[2:length(X.k),2] <- 2*plot.data[2:length(X.k),2]
-  plot.data <- as.data.frame(plot.data)
-  
-  pl <- ggplot(plot.data) + geom_line(aes(x = V1, y = V2), binwidth = 1) 
-  print(pl)
-  return(plot.data)
-}
-
-ft <- fft(df$watch_gyro[[subject]]$x_axis[1:100])
-plot.frequency.spectrum(ft)
-
-
-# Retrieving the desired data
-
-
-### 2D Density of Axis State Space #########################
+### 2D Density of Axis State Space ###############################################################
 
 pl7 <- ggplot(subset(df$phone_accel$p1, activity == selected_activity),
              aes(x=x_axis, y=z_axis)) + 

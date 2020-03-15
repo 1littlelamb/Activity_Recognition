@@ -43,6 +43,7 @@
 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 %\SweaveOpts{concordance=TRUE}
 
 %\SweaveOpts{concordance=TRUE}
@@ -95,7 +96,40 @@ The objective of this project is to use the digital signals provided by these ME
 
 The dataset being used for this project comes from the WISDM Lab and has been made available under public domain \cite{Kwapisz2010}. It is a compilation of raw accelerometer and gyroscopic data recorded from both the phone and watch simultaneously. The dataset has over 45 million datapoints across 51 different subjects each performing 18 different activities. This vast dataset provides more than enough information however it being a raw data signal, key features such as variance and extrema must be extracted in order to improve interpitability. 
 
+\pagebreak
+
 \section{Methodology}
+
+First the data was compiled into a dataframe that contained roughly 80 percent of all available data. This was the result of making all recorded activities include the same number of recorded samples. Increasing the symmetry of the data allowed me to collect it into one dataframe with over three million rows, streamlining the feature engineering process. Time data was removed, thus further feature engineering operated under the assumption that samples were recorded at exactly 20Hz. \par
+
+\subsection*{Exploratory Data Analysis}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=17cm]{all_actvts.pdf}
+\caption{Density plot of all activities for all users.}
+\label{figure:density_actvts}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=17cm]{user_standing.pdf}
+\caption{Density plot of all users x-axis acceleration data while standing.}
+\label{figure:dsp_fft}
+\end{center}
+\end{figure}
+
+\subsection*{Feature Engineering}
+\subsection*{}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=17cm]{fft_grid.pdf}
+\caption{Example of a fourier transform applied to a ten second window of someone brushing their teeth.}
+\label{figure:dsp_fft}
+\end{center}
+\end{figure}
 
 \section{Results and Discussion}
 
@@ -105,7 +139,6 @@ The dataset being used for this project comes from the WISDM Lab and has been ma
 
 
 \pagebreak
-
 
 % Adding a bibliography if citations are used in the report
 \printbibliography

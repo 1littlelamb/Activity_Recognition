@@ -1,8 +1,14 @@
 # Feature extraction and model making - Felix Slothower
 
+#TODO: 
+#   - Include the diptest function
+#   - Test the effect of removing the gyroscopic data
+#   - Fix the magnitudes function to allow for the above
+
 setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/')
 
-pacman::p_load(rio, dplyr, tidyr, caTools, caret, e1071, MASS, zoo, class, randomForest, progress)
+pacman::p_load(rio, dplyr, tidyr, caTools, caret, e1071, MASS, zoo, class, randomForest, progress,
+               diptest)
 source('functions/lighten.R')
 source('functions/differences.R')
 source('functions/user_split.R')
@@ -16,16 +22,8 @@ source('functions/roll_apply.R')
 # Import the data
 data <- import("./../../rds_data/wisdm_dataset_df.rds")
 
-# I ultimately want to just write
-# funs <- list(mean = mean,
-#              sum = sum,
-#              power = power,
-#              meandiff = meandiff)
-# lwt <- lighten(data, actvt, samples)
-# features <- lapply(funs, function(f) f(lwt))
-
 # Creating a lightweight sample of the data
-lwt <- lighten(data, c("A", "B", "D"), samples = 2000) %>% dplyr::select(-Time)
+lwt <- lighten(data, c("G"), samples = 2000) %>% dplyr::select(-starts_with(c('PG','WG')))
 
 # Creating the Mean feature
 #difference <- t(apply(as.matrix(means), 1, differences)) %>% as.data.frame()
@@ -44,11 +42,11 @@ means <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, colMea
 ffts  <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win,  max.fft, by) ; pb.max.fft$terminate()
 vars  <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win, axis.var, by) ; pb.axis.var$terminate()
 extrm <- lwt %>% dplyr::select(-c("User", "Activity")) %>% rollApply(win,  extrema, by) ; pb.extrm$terminate()
-#TODO include more features
+#TODO include diptest feature
 
 E.mag <- means %>% magnitudes() ; pb.mag$terminate()
 
-names(E.mag) <- paste0(c("PA", "PG", "WA", "WG"), '.Emag')
+names(E.mag) <- paste0(c("PA", "WA"), '.Emag')
 names(ffts)  <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.mf')
 names(vars)  <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.var')
 names(extrm) <- paste0(names(lwt %>% dplyr::select(-c("User", "Activity"))), '.ext')
