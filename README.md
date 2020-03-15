@@ -1,2 +1,2 @@
 # Activity_Recognition
-Machine Learning Course Project Q1 2020
+Machine Learning Course. Final Project. Q1 2020
