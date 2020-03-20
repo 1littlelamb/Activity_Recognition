@@ -8,6 +8,22 @@
 \usepackage[english]{babel}
 \usepackage{tikz}
 \usepackage[backend = biber]{biblatex}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{csquotes}
+
 
 \bibliography{references}
 
@@ -47,7 +63,7 @@
 \subsectionfont{\color{lightsienna}}
 
 % If multiple images are to be added, a folder (path) with all the images can be added here 
-\graphicspath{ {C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/images/} }
+\graphicspath{ {C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/images/} }
 
 
 \begin{document}
@@ -84,35 +100,73 @@
 
 \end{titlepage}
 
+<<setup, include=FALSE>>=
+pacman::p_load(knitr,tidyr,dplyr,kableExtra)
+# in this document we mainly use results='asis', so set it globally
+opts_chunk$set(results='asis')
+data_ <- readRDS('rds_datasets/wisdm_dataset_df.rds')
+
+activity_dict <- data.frame(Activity = c("Walking",
+                                            "Jogging",
+                                            "Stairs",
+                                            "Sitting",
+                                            "Standing",
+                                            "Typing",
+                                            "Brushing Teeth",
+                                            "Eating Soup",
+                                            "Eating Chips",
+                                            "Eating Pasta",
+                                            "Drinking from Cup",
+                                            "Eating Sandwich",
+                                            "Kicking (Soccer Ball)",
+                                            "Playing Catch/Tennis Ball",
+                                            "Dribbling (Basketball)",
+                                            "Writing",
+                                            "Clapping",
+                                            "Folding Clothes"),
+                            Code = LETTERS[1:19][-14])
+
+@
+
 % ABSTRACT
 \begin{abstract}
-   As smart watches becoming a common accessory among consumers, new opportunities arise in the activity recognition space. Machine Learning tools have the potential to reference both wrist and hip motion simultaneously by combining smart watch and phone accelerometer data. The combination of the two data streams are explored as a potentially major improvement to activity recognition accuracy with improved sensitvity to more nuanced activities such as eating soup versus eating a sandwich. The dataset provided for this project comes from the WISDM Labratories and is offered as public domain. NAME THE FEATURES. AND MODELS USED. AND THEN WRAP UP QUICKLY WITH RESULTS!
+   As smart watches are becoming a common accessory among consumers, new opportunities arise in the activity recognition space. Machine Learning tools have the potential to reference both wrist and hip motion simultaneously by combining smart watch and phone accelerometer data. The combination of the two data streams are explored as a potentially major improvement to activity recognition accuracy with improved sensitvity to more nuanced activities such as eating soup versus eating a sandwich. Several features were created in an attempt to flush out distinguishable characteristics between these activities and a broad selection of machine learning models were used for classification. Results were varied however a good foundation for further data processing and model creation was layed out and can hopefully guide fellow data scientists in the Activity Recognition space.
 \end{abstract}
 
 \section{Introduction}
 
-Activity recognition has many applications in the health and wellness sector. Being able to detect certain conditions quickly can be critical to the effectiveness of the respective treatment measures like is with the case of Parkinson's disease \cite{Hauser2010Mar}. \par
+Activity recognition has many applications in the health and wellness sector. Being able to detect certain conditions quickly can be critical to the effectiveness of the respective treatment measures as is the case with Parkinson's disease \cite{Hauser2010}. \par
 
 With the advent of Microelectromechanical Systems(MEMS), information about the linear and angular acceleration of an object in discrete time can be obtained using a silicon wafer small enough to fit on the back of a human nail \cite{Iannacci2017}. Inclusion of such sensors has become ubiquitous in mobile electronic devices and has led to an explosion in the amount of accerlation and gyroscopic data available. The raw signals coming from these sensors can be used used by machine learning algorithms to perform activity recogninition, giving abstract and superficial discrete time data meaning. These algorithms can be tailored to detect discrete activities such as a tremor in the hand which might be associated with Parkinson's disease, providing advanced diagnosis as discussed earlier. \par
 
-The objective of this project is to use the digital signals provided by these MEMS sensors to determine the types of activities being conducted by their users. Multiple machine learning models are used for the classification of activities including: k-Nearest Neighbors, Random Forests, Support Vector Machines and Linear and Quadtratic Discriminant Analysis. \par
+The objective of this project is to use the digital signals provided by these MEMS sensors to determine what types of activities are being conducted by their users. Multiple machine learning models are used for the classification of activities including: k-Nearest Neighbors, Random Forests, Support Vector Machines and Linear and Quadtratic Discriminant Analysis. \par
 
-The dataset being used for this project comes from the WISDM Lab and has been made available under public domain \cite{Kwapisz2010}. It is a compilation of raw accelerometer and gyroscopic data recorded from both the phone and watch simultaneously. The dataset has over 45 million datapoints across 51 different subjects each performing 18 different activities. This vast dataset provides more than enough information however it being a raw data signal, key statistical and frequency domain features must be extracted in order to improve interpitability. 
+The dataset being used for this project comes from the WISDM Lab and has been made available under public domain \cite{Kwapisz2010}. It is a compilation of raw accelerometer and gyroscopic data recorded from the phone and the watch simultaneously. The dataset has over 45 million datapoints across 51 different subjects each performing 18 different activities. This vast dataset provides more than enough information. However, it being a raw data signal, key statistical and frequency domain features must be extracted in order to improve interpitability. 
 
 \pagebreak
 
 \section{Methodology}
 
-First the data was compiled into a dataframe that contained roughly 80 percent of all available data. This was the result of making sure all recorded activities had the same number of samples. Increasing the symmetry of the data allowed me to collect it into one dataframe with over three million rows, streamlining the feature engineering process. Time data was removed and instead it was simply assumed that samples were recorded at exactly 20Hz. \par
+First the data was compiled into a dataframe that contained roughly 80 percent of all available data. This was the result of making sure all recorded activities had the same number of samples. Increasing the symmetry of the data allowed me to collect all the recorded samples into one dataframe with over three million rows, thus streamlining the feature engineering process. Time data was removed and instead it was simply assumed that samples were recorded at exactly 20Hz. The structure of the dataframe can be seen in the above table with acceleration and gyroscopic data in three axes for both the watch and mobile phone. Some simple graphical analysis is done below to better understand our data. \par
 
 <<echo=FALSE, results='asis'>>=
-require(xtable)
-xtable(str(data), caption="Structure of the dataframe containing all raw signals")
+kable(t(head(data_[1:4,])),
+      booktabs = TRUE,
+      caption = "The first four samples of the dataframe in order to see its structure") %>% 
+pack_rows(group_label = "Phone Acceleration",
+          start_row = 4, end_row = 6, latex_gap_space = "1em") %>% 
+pack_rows(group_label = "Phone Gyroscope",
+          start_row = 7, end_row = 9, latex_gap_space = "1em") %>% 
+pack_rows(group_label = "Watch Acceleration",
+          start_row = 10, end_row = 12, latex_gap_space = "1em") %>% 
+pack_rows(group_label = "Watch Gyroscope",
+          start_row = 13, end_row = 15, latex_gap_space = "1em")
+
 @
 
 \subsection*{Exploratory Data Analysis}
 
-In order to become familiar with the data and understand its characteristics I made several plots and in so doing, was able to determine applicable methods for distinguishing the different activities. Figure \ref{fig:walk_clap} shows a tiny snippet of the dataset we are working with and is displayed in true Digital Signal Processing format. In this particular example we can notice the clapping signal has some strong outliers which is likely due to the sudden change in velocity once the hands collide to make the clap noise. The walking signal on the other hand is much smoother and does not have the same abrupt behaviour. \par
+In order to become familiar with the data and understand its characteristics I made several plots and in so doing, was able to determine applicable methods for distinguishing the different activities. Figure \ref{fig:walk_clap} shows a tiny snippet of the dataset I am working with and is displayed in true Digital Signal Processing format. In this particular example one can notice the clapping signal has some strong outliers which is likely due to the sudden change in velocity once the hands collide to make the clap noise. The walking signal on the other hand is much smoother and does not have the same abrupt behaviour. \par
 
 In Figure \ref{fig:actvts} it becomes clear that different activities can have different signatures. Some of the distributions are bimodal while most others are unimodal. This quality is measured later in the Feature Engineering section below. \par
 
@@ -126,13 +180,13 @@ In Figure \ref{fig:actvts} it becomes clear that different activities can have d
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=15cm]{all_actvts.pdf}
-\caption{\footnotesize Density plot of all activities for all users. The various colors represent the different activities.}\label{fig:actvts}
+\caption{\footnotesize Density plot of all activities for only one user. The various colors represent the different activities.}\label{fig:actvts}
 \end{center}
 \end{figure}
 
 While the various activities seem to be somewhat unique when looking at their histrograms, it is important to remember that different users will have the device oriented in different ways with respect to themselves and Earth's acceleration. For example, we can see a high degree of variance between histrograms of standing data produced by twenty different test subjects in Figure \ref{fig:standing}. These large differences highlight the necessity for orientation agnostic features. That is, information about a particular dataset (or feature) whose value will remain the same, independent of the devices orientation during the activity. \par
 
-From these plots it is clear that there is a lot of work that has to be done in order to create distinguishable features that our various models can use in order to categorize the eighteen different activities. \par
+From these plots it is clear that there is a lot of work that has to be done in order to create distinguishable features that our various models can use in order to categorize the eighteen different activities. This is where feature engineering becomes critical. \par
 
 \begin{figure}[H]
 \begin{center}
@@ -142,26 +196,137 @@ From these plots it is clear that there is a lot of work that has to be done in 
 \end{figure}
 
 \subsection*{Feature Engineering} 
-\subsection*{}
+
+When applying the feature engineering, sequential windows of the dataframe were examined and various statistics and functions were applied to them, transforming a sequence of rows into a single row of many different values. These values will be the predictors in our models. The windowing process is visualized in Figure \ref{fig:window} and a custom function was written in R for this particular task.  
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=15cm]{windowing.pdf}
+\caption{\footnotesize Diagram explaining the windowing process applied to the raw dataframe during the feature engineering process. A series of functions are applied to each window and the resultant values become the relevant features used by our models.}\label{fig:window}
+\end{center}
+\end{figure}
+
+A total of eight different features were used and applied to all twelve signals listed in Table 1. Some features would return a value for each respective signal and others would return a subset of values, one for each sensor for example. The eight features were mean, variance, axis correlation, integral, extrema, max frequency, spectral energy and the dip test. The use of some of these features was inspired by other peoples' work in the area \cite{Walse2016} \cite{Figo2010} and others, like the dip test, were the result of my own curiosity. The eight features are explained in closer detail below. \par
+
+\vspace{5mm}
+
+\textbf{Mean} - This feature is not orientation agnostic but it is too powerful to ignore since accuracy drops when excluded as a predictor. While different people will wear devices in different orientations there seems to be some regularity in orientation. For example, a mobile phone worn in someone's pant pocket is typically not oriented with the screen parallel to Earth's surface. It is much more likely that the phone screen is parallel to their leg in that scenario. This consistency is likely why the mean feature has some importance as a predictor. \par
+
+\vspace{5mm}
+
+\textbf{Variance} - A metric that helps explain how spread out the numbers are in a dataset, the variance is calculated as the averaged sum of the squared difference between each observation and the mean of all the observations. The square root of the variance gives the standard deviation and the two should not be used simultaneously as predictors for this reason. Highly correlated predictors can potentially reduce a model's accuracy and should be avoided.
+
+\vspace{5mm}
+
+\textbf{Axis Correlation} - There are many ways to calculate correlation and in this case the Kendall's correlation coefficient was used since it is less sensitive to outliers \cite{Croux2010}. Correlation between axes is helpful for distinguishing activities that occur primarily in one dimension like walking forward versus multiple dimensions, such as climbing a flight of stairs \cite{Ravi2005}. 
+
+\vspace{5mm}
+
+\textbf{Integral} - The integration of the the acceleration yields velocity and the integration of velocity yields position. Unfortunately this cannot be directly applied to each component acceleration with the expectation of understanding the net point-to-point distance that the user traveled since the angle of the device is variable and must be taken into consideration. These calculations can become considerably complex and so only the double integral of each axis acceleration was computed. These values can still be helpful in understanding the distance the device traveled in each of its local axes.
+
+\vspace{5mm}
+
+\textbf{Extrema} - The extrema are calculated by subtracting the maximum and minimum observations from the mean and selecting the largest absolute value from the two. The extrema is made relative to the mean in an attempt to make the feature orientation agnostic and seeks to identify sudden jerks in the sensors that might be indicative of specific activities such as clapping as seen in right-hand plot of Figure \ref{fig:walk_clap}.
+
+\vspace{5mm}
+
+\textbf{Max Frequency} - The maximum frequency of the signal is found by first performing a Fourier Transform to the 200 sample window. This converts the signal from a time domain to a frequency domain. The frequency with the most strength is then selected and used as a feature for that particular window. A demonstration of this is provided in Figure \ref{fig:dsp_fft}. In this particular case it is quite clear that there is a strong frequency of approximately 12 Hz throughout the digital signal as illustrated in the right-hand plot. 
+
+\vspace{5mm}
+
+\textbf{Spectral Energy} - The spectral energy is another feature found by transforming the signal from the time domain to the frequency domain. It is the squared sum of the spectral coefficients and is normalized by the window length \cite{Figo2010}. The spectral energy tries to explain the amount of energy put into the sensor and can be helpful in detecting high intensity activities \cite{Nham2008}.
+
+\vspace{5mm}
+
+\textbf{Dip Test} - There are many different tests for multi-modality in a distribution but the Hartigan Dip Test offers a novel approach which does not yield false positives when the distribution is heavily skewed \cite{Hartigan1985}. The Hartigan dip test produces a value between 0 and 1 where a high value gives a strong indication for deviation from unimodality \cite{stackExhanchangeDipTest}. This feature ended up being the least important when predicting the various activities and was eventually removed in order to improve accuracy.
+
+\vspace{5mm}
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=15cm]{fft_grid.pdf}
-\caption{Example of a fourier transform applied to a ten second window of someone brushing their teeth.}
-\label{fig:dsp_fft}
+\caption{\footnotesize Example of a fourier transform applied to a ten second window of someone brushing their teeth.}\label{fig:dsp_fft}
 \end{center}
 \end{figure}
 
+Not all features were equally useful and as it turns out the Hartigan Dip Test was substantially less important than all the other features. Now that we have the final feature dataset it can be applied to our various models and their accuracies can be compared.
+
+\subsection*{Modeling}
+
+Six different models were used for this project with varying success. The six models include Quadratic Discriminant Analysis, k-Nearest Neighbors, Random Forest and three Support Vectors Machines, each using a different kernel: Linear, Polynomial and Radial. As testing progressed it became clear that the Random Forest was performing much better than the others in predicting all eighteen activities. However, all six models performed well when only distinguishing between two activities. \par
+Accuracies were validated using the k-Fold Cross Validation technique. A special function was used for splitting the data into k folds so that subsets of users were collected for each fold rather than subsets of individual data points. By doing this I was able to test the versatility of the models when faced with data from new users not previously incorporated. Had this not been implemented the accuracies would have likely been much higher. 
+
 \section{Results and Discussion}
 
+In Table 2 you will find the accuracies of the six outlined models when applied to the full dataset and asked to classify all eighteen activities. As we can see, the Random Forest model performed the best but was only able to reach an accuracy of around 70\%. This accuracy is not high enoough for our model to be used in a real world aplication and would need further improvement. Some improvements are discussed in the conclusion section below.\par
 
-\section{Conclusion}
-\subsection{Acknowledgements}
+<<echo=FALSE, results='asis'>>=
+all.acc <- readRDS("tables/all_acc.rds")
+kable(all.acc, booktabs=TRUE, linesep = '',caption='Classification of all activities') %>% 
+  kable_styling(latex_options = c("striped", "hold_position"))
+@
 
+In Table 3, classification between various sets of only two different activities is performed and here we see the accuracies have improved significantly. Noticing the differences between someone's watch accelerometer while writing versus clapping is much easier than distinguishing between different eating activities, as shown in Table 4. The four activities classified in Table 4 were eating soup, eating chips and eating pasta and eating a sandwich. Differences in the digital signals of these four activities are likely very nuanced and hard to seperate into different categories. In this particular case, finding features that can highlight the differences between such activities might be a task better suited for a deep learning neural network. \par
+
+A confusion matrix is provided in Table 5 along with an activity key code in Table 6. This confusion matrix shows good performance for the classification of many activities but falls short when classifying the four different eating activities as well as drinking from a cup. \par
+
+
+<<echo=FALSE, results='asis'>>=
+QR.acc <- readRDS("tables/QR_acc.rds")
+
+kable(QR.acc, booktabs=TRUE, linesep = '',caption='Classification of Writing vs. Clapping') %>% 
+  kable_styling(latex_options = c("striped", "hold_position")) 
+@
+
+<<echo=FALSE, results='asis'>>=
+HIJL.acc <- readRDS("tables/HIJL_acc.rds")
+kable(HIJL.acc, booktabs=TRUE, linesep = '',
+      caption='Classification of the four types of Eating') %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+@
+
+
+Finally, by using the importance tool in the Random Forest library 'randomForest', we can get a nice visual representation of the varying importance for our predictors, as in Figure \ref{fig:importance}, and perhaps glean information about which types of predictors perform the best. The importance is obtained by measuring the reduction in impurity after using a given predictor at any node across all trees. The first thing to notice, and what I found most surprising, was that the mean for all three axes of the watch accelerometer were the three most important predictors. This clearly points to a certain consistency in the orientation of the watch across users which would make sense considering there aren't many ways a watch can be worn. One additional explanation for this could be the fact that only one smartwatch model was used across all 51 users. Using the same watch model means that the accelerometers orientation with respect to the users wrist will be consistent across all users. Conversely, the mobile phones used for the dataset varied between three different models and each model is likely to have their accelerometer oriented in a different fashion resulting in less consistent orientation and thereby less important mean axial acceleration predictors. \par
+
+
+<<echo=FALSE, results='asis'>>=
+confusion <- readRDS('tables/confusion_matrix.rds')
+kable(confusion, booktabs=TRUE, caption='Confusion Matrix of the Random Forest model applied to all Activities', linesep = '') %>% 
+  kable_styling(latex_options = c("hold_position","scale_down"), position = "center")
+@
+
+
+<<echo=FALSE, results='asis'>>=
+kable(activity_dict, booktabs=TRUE, caption='Activity Key Code', linesep = '') %>% 
+  kable_styling(latex_options = "hold_position")
+@
+
+
+\begin{figure}
+\centering
+\includegraphics[width=15cm]{importance.pdf}
+\caption{\footnotesize This plot helps visualize the importance of the different predictors. Interestingly the mean watch acceleration in the x-axis is the the most important. This indicates that orientation agnostic data might not be so critical for the watch. This would make sense since there are not many different ways a watch can be worn.}\label{fig:importance}
+\end{figure}
 
 \pagebreak
 
-% Adding a bibliography if citations are used in the report
+\section{Conclusion}
+
+In this project we have covered all aspects of the machine learning process from exploratory data analysis to feature generation, model making, tuning and analysis of results. The initial ideas about creating orientation agnostic features turned out to be less critical than intially forecasted. With the added support of consistently oriented devices our models would likely become far more accurate. \par
+
+My hypothesis that variable orientation might hurt the model making process was somewhat misfounded and the mean predictors ended up being some of the most important predictors created. One advantage of the mean predictors is their ability to remove noise. Taking the mean across a signal will quiet any of the noise that might appear either by the surrounding electronics or due to vibrations or temperature fluctuations effecting the mechanical behaviour of the sensor \cite{Cemer1Feb.2011}. \par
+
+It should come as no surprise that the Random Forest performed the best when asked to classify all the different activities. Random Forests are very versatile when higher dimension datasets are used, like the one created for this project. Because random subsets of the predictors are used when creating each new tree, the forest becomes decoupled thus reducing the variance in averaged accuracy across trees and improving reliability. \par
+
+Other models might have better success with detecting the more nuanced activities such as the consumption of different foods. A deep learning neural network for example, would be able to create it's own instructions for detecting these activities and has been quiet successful in other studies \cite{xue2018understanding} \cite{Pienaar2019}. 
+
+\subsection*{Acknowledgements}
+
+This project has been an epic journey and I would like to thank many of my peers who provided advice and support throughout the quarter as I was working on this project. Namely Tritai Nguyen for helping me understand the way digital signals should be visualized. My classmates in the Machine Learning class, Nick Gurnard, Brian Fox, Jonathan Palafoutas, and Patrick Youssef for all the little tips and hiccups that they shared, making my life coding in R smoother. My mother for proofreading my work. And lastly to Prof. Dabdub. Thank you.
+
+\pagebreak
+
+% Adding a bibliography of citations are used in the report
 \printbibliography
 
 
