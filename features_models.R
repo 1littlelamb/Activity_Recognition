@@ -21,7 +21,7 @@ source('functions/position.R')
 source('functions/roll_apply.R')
 
 # Import the data
-data <- import("./../../rds_data/wisdm_dataset_df.rds")
+data <- import("rds_datasets/wisdm_dataset_df.rds")
 
 # Creating a lightweight sample of the data
 lwt <- lighten(data, 'all', samples = 1:3200) %>% dplyr::select(-Time)
@@ -61,7 +61,7 @@ features <- cbind(means, ffts, vars, extrm, energies, positions, corr, dip, actv
 actvt_and_usr_cols <- c(dim(features)[2]-1,dim(features)[2])
 features[,-actvt_and_usr_cols] <- scale(features[,-actvt_and_usr_cols])
 
-saveRDS(features, './../../rds_data/features.rds')
+saveRDS(features, 'rds_datasets/features.rds')
 
 ###################################################################################################
 
@@ -181,4 +181,4 @@ accuracies <- signif(c(qda_acc_avg, knn_acc_avg,
 accuracies <- paste0(accuracies, '%')
 names(accuracies) <- c("QDA", "KNN", "SVM-Linear", "SVM-Polynomial", "SVM-Radial", "RF")
 table.acc <- data.frame(Accuracy = accuracies)
-saveRDS(table.acc, "all_acc.rds")
+saveRDS(table.acc, "tables/all_acc.rds")

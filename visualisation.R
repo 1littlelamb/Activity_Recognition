@@ -1,9 +1,9 @@
 # Initial Plotting of the Data to get a better understanding of what is happening
-setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/')
 
 # Loading in custom font from local machine
 extrafont::font_import(path = "fonts/", pattern = "lmroman*")
 extrafont::loadfonts()
+windowsFonts(`LM Roman 10` = windowsFont('LM Roman 10'))
 
 # Loading in necessary libraries
 pacman::p_load(rio, dplyr, tidyr, ggplot2, ggthemes, corrplot, cowplot,
@@ -13,9 +13,9 @@ source('functions/complex_magnitude.R')
 opts_chunk$set(dev = 'CairoPDF')
 
 # Loading in the data, if necessary
-df <- readRDS('./../../rds_data/wisdm_dataset_list.rds')
+df <- readRDS('rds_datasets/wisdm_dataset_list.rds')
 
-data <- readRDS('./../../rds_data/wisdm_dataset_df.rds')
+data <- readRDS('rds_datasets/wisdm_dataset_df.rds')
 
 # Creating the color palette for coloring the lines
 master_color <- "#a63a61"
@@ -107,7 +107,7 @@ print(pl2)
 ### 1 and 2. Combining the Walking and Clapping Signals ###########################################
 
 grid1 <- grid.arrange(pl1, pl2, nrow = 1)
-ggsave('./../../images/walking_and_clapping.pdf', grid1, 
+ggsave('images/walking_and_clapping.pdf', grid1, 
        width = 8, height = 4, device = cairo_pdf)
 
 # Other ways to do the same thing
@@ -130,7 +130,7 @@ pl3 <- ggplot(pl3_data) +
        xlab('Acceleration'~(m/s^2)) + 
        ylab('Count') 
 print(pl3)
-ggsave('./../../images/all_actvts.pdf', pl3,
+ggsave('images/all_actvts.pdf', pl3,
        width= 8, height = 4, device = cairo_pdf)
 
 ### 4. The xyz accel vs sys_time of a given task #################################################
@@ -147,7 +147,7 @@ pl4 <- ggplot(pl4_data) +
        xlab('Acceleration'~(m/s^2)) +
        ylab('Count') 
 print(pl4)
-ggsave('./../../images/user_standing.pdf', pl4,
+ggsave('images/user_standing.pdf', pl4,
        width = 8, height = 4, device = cairo_pdf)
 
 ### 5. The Time Domain for xyz accel of a given task #############################################
@@ -181,12 +181,12 @@ pl6 <- ggplot(pl6_fft) +
   xlab('Frequency (Hz)') + ylab('Intensity') 
 
 print(pl6)
-ggplot2::ggsave('./../../images/fft_toothbrush.pdf', pl6, device = cairo_pdf)
+ggplot2::ggsave('images/fft_toothbrush.pdf', pl6, device = cairo_pdf)
 
 ### 5 and 6. Combining the Frequency and Time Domain ##############################################
 
 grid2 <- grid.arrange(pl5, pl6, nrow = 1)
-ggsave('./../../images/fft_grid.pdf', grid2,
+ggsave('images/fft_grid.pdf', grid2,
        width = 8, height = 4, device = cairo_pdf)
 
 

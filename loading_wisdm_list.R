@@ -1,7 +1,6 @@
 # Version 2 of Loading Data
 
 pacman::p_load(rio, dplyr, tidyr)
-
 directories <- paste0("./wisdm-dataset/raw/", list.dirs(path = "./wisdm-dataset/raw/", full.names = FALSE),"/")[c(3,4,6,7)]
 
 df <- list()
@@ -21,5 +20,4 @@ for (i in c(1:4)) {
 
 names(df) <- c('phone_accel','phone_gyro','watch_accel','watch_gyro')
 
-# TODO: restructure. groupby %>% forcelength %>% pivot_wider
-
+saveRDS(df, 'rds_datasets/wisdm_dataset_list.rds')

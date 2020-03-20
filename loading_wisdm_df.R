@@ -39,4 +39,4 @@ df$WGZ <- as.double(sub(";$", "", df$WGZ))
 
 df$Time <- df$Time / 1e9
 
-saveRDS(df, 'wisdm_dataset_df.rds')
+saveRDS(df, 'rds_datasets/wisdm_dataset_df.rds')
