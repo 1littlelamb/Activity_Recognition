@@ -94,7 +94,7 @@
 		University of California - Irvine \par}
 		
 	% Set the date
-	{\normalsize 02-24-2020 \par}
+	{\normalsize 03-20-2020 \par}
 	
 	\pagebreak
 
