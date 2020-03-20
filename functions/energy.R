@@ -1,9 +1,9 @@
-# My max fft function for finding the most prominent frequency from the given window
+# Finding the total energy of the windowed signal
 
 source('functions/complex_magnitude.R')
 
-max.fft <- function(data_) {
-
+energy <- function(data_) {
+  
   temp <- as.data.frame(data_) %>% 
     #dplyr::select(-Activity,-User) %>% 
     as.matrix() %>% 
@@ -12,7 +12,7 @@ max.fft <- function(data_) {
     as.data.frame %>% 
     slice(2:(ceiling(win/2)))
   
-  freq <- apply(temp, 2, which.max) %>% t() %>% as.data.frame()
+  energy_ <- colSums(temp)/(win/2) %>% as.data.frame() %>% t()
   
-  return(freq)
+  return(energy_)
 }

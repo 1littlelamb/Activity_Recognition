@@ -1,16 +1,19 @@
-# Computing the magnitudes of the 4 accelerations.
+# Computing the magnitude of the component accelerations.
+
+require(dplyr)
 
 magnitudes <- function(data_) {
   
-  pa_mag <- data_ %>% subset(select = 1:3) %>% apply(1, function(x) sqrt((x[1]^2)+(x[2]^2)+(x[3]^2)))
-  pg_mag <- data_ %>% subset(select = 4:6) %>% apply(1, function(x) sqrt((x[1]^2)+(x[2]^2)+(x[3]^2)))
-  wa_mag <- data_ %>% subset(select = 7:9) %>% apply(1, function(x) sqrt((x[1]^2)+(x[2]^2)+(x[3]^2)))
-  wg_mag <- data_ %>% subset(select = 10:12) %>% apply(1, function(x) sqrt((x[1]^2)+(x[2]^2)+(x[3]^2)))
+  mag <- data.frame(seq(0,200))
+  remaining <- vector()
   
-  pa_mag <- pa_mag %>% as.data.frame() %>% 'names<-'('PA')
-  pg_mag <- pg_mag %>% as.data.frame() %>% 'names<-'('PG')
-  wa_mag <- wa_mag %>% as.data.frame() %>% 'names<-'('WA')
-  wg_mag <- wg_mag %>% as.data.frame() %>% 'names<-'('WG')
+  sensors <- c("PA", "PG", "WA", "WG")
+  for (i in 1:4) {
+    temp_mag <- data_ %>% dplyr::select(starts_with(sensors[i])) %>% 
+      apply(1, function(x) sqrt((x[1]^2)+(x[2]^2)+(x[3]^2)))
+    if (!any(is.na(temp_mag))) {mag <- cbind(mag, as.data.frame(temp_mag))}
+    else {remaining[i] <- sensors[i]}
+  }
   
-  return(cbind(PA = pa_mag, PG = pg_mag, WA = wa_mag, WG = wg_mag))
+  return(mag[-1] %>% 'names<-'(sensors))
 }
