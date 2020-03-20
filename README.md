@@ -11,8 +11,8 @@ font file provided under /fonts/ to your local machines font library. This can b
 to C:/Windows/Fonts/ and dropping the file into this directory. 
 
 It is also important that 
-'''' 
+```
 windowsFonts(`LM Roman 10` = windowsFont('LM Roman 10'))
-''''
+```
 is run before loading the neceessary libraries. If this is not done, it will be necessary to restart
 RStudio!
