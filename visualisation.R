@@ -1,6 +1,13 @@
 # Initial Plotting of the Data to get a better understanding of what is happening
 
-# Loading in custom font from local machine
+# If extrafont is not installed on your local machine run this next line, restart RStudio 
+# and then comment it out or delete it. Adding custom fonts has been rather buggy and it has been
+# recommended that loading in fonts is the absolute first this RStudio should do, thus the 
+# minor detour explained above is necessary if extrafont is not installed.
+
+pacman::p_load(extrafont)
+
+# Loading in custom font from local machine, two methods are used for redundancy.
 extrafont::font_import(path = "fonts/", pattern = "lmroman*")
 extrafont::loadfonts()
 windowsFonts(`LM Roman 10` = windowsFont('LM Roman 10'))
