@@ -14,5 +14,11 @@ It is also important that
 ```
 windowsFonts(`LM Roman 10` = windowsFont('LM Roman 10'))
 ```
-is run before loading the neceessary libraries. If this is not done, it will be necessary to restart
-RStudio!
+is run before loading the neceessary libraries. If this is not done you will have to restart RStudio
+if you want to see the plots with the correct font.
+
+Also to notes is the fact that `wisdm_dataset_df.rds` and `wisdm_dataset_list.rds` are not included 
+and must by created by executing the files `loading_wisdm_df.R` and `loading_wisdm_list.R` respectively. 
+This is where including the publically available WISDM dataset in the same directory will be important.
+
+Good Luck!
