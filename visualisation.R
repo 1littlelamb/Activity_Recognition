@@ -8,8 +8,8 @@
 pacman::p_load(extrafont)
 
 # Loading in custom font from local machine, two methods are used for redundancy.
-extrafont::font_import(path = "fonts/", pattern = "lmroman*")
-extrafont::loadfonts()
+#extrafont::font_import(path = "fonts/", pattern = "lmroman*")
+#extrafont::loadfonts()
 windowsFonts(`LM Roman 10` = windowsFont('LM Roman 10'))
 
 # Loading in necessary libraries

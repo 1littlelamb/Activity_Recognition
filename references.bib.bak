@@ -1,0 +1,180 @@
+% Encoding: UTF-8
+
+@Article{Walse2016,
+  author  = {Kishor Walse and V Rajiv and Vilas Dharaskar and null Thakare},
+  journal = {The Institute of Integrative Omics and Applied Biotechnology Journal},
+  title   = {A study of human activity recognition using AdaBoost classifiers on WISDM dataset},
+  year    = {2016},
+  pages   = {68--76},
+  volume  = {7},
+}
+
+@Article{Hauser2010,
+  author = {R Hauser},
+  title  = {Early pharmacologic treatment in Parkinson's disease. The American Journal of Managed Care},
+  year   = {2010},
+  month  = mar,
+  pages  = {100--107},
+  volume = {16},
+}
+
+@Article{ElShafie2012,
+  author    = {A. El-Shafie and A. Noureldin and M. Taha and A. Hussain and M. Mukhlisin},
+  journal   = {Hydrology and Earth System Sciences},
+  title     = {Dynamic versus static neural network model for rainfall forecasting at Klang River Basin, Malaysia},
+  year      = {2012},
+  month     = {apr},
+  number    = {4},
+  pages     = {1151--1169},
+  volume    = {16},
+  doi       = {10.5194/hess-16-1151-2012},
+  publisher = {Copernicus {GmbH}},
+}
+
+@Article{Gupta2014,
+  author  = {Piyush Gupta and Tim Dallas},
+  journal = {IEEE Transactions on Biomedical Engineering},
+  title   = {Feature selection and activity recognition system using a single triaxial accelerometer},
+  year    = {2014},
+  pages   = {1780--1786},
+  volume  = {61},
+}
+
+@Article{Figo2010,
+  author    = {Davide Figo and Pedro C. Diniz and Diogo R. Ferreira and Joao M. P. Cardoso},
+  journal   = {Personal and Ubiquitous Computing},
+  title     = {Preprocessing techniques for context recognition from accelerometer data},
+  year      = {2010},
+  number    = {7},
+  pages     = {645--662},
+  volume    = {14},
+  doi       = {10.1007/s00779-010-0293-9},
+  publisher = {Springer Science and Business Media {LLC}},
+}
+
+@Article{Pienaar2019,
+  author    = {Schalk Pienaar and Reza Wilhelm and null Malekian},
+  title     = {Human activity recognition using LSTM-RNN deep neural network architecture},
+  year      = {2019. 2019},
+  booktitle = {IEEE 2nd Wireless Africa Conference (WAC)},
+  publisher = {IEEE},
+}
+
+@InProceedings{Kwapisz2010,
+  author    = {Jennifer Kwapisz and Gary Weiss and Samuel Moore},
+  booktitle = {Proceedings of the Fourth International Workshop on Knowledge Discovery from Sensor Data (at KDD-10)},
+  title     = {Activity Recognition using Cell Phone Accelerometers},
+  year      = {2010},
+  address   = {Washington DC},
+}
+
+@InCollection{Iannacci2017,
+  author    = {Iannacci, Jacopo},
+  booktitle = {RF-MEMS Technology for High-Performance Passives},
+  publisher = {IOP Publishing},
+  title     = {Introduction to MEMS and RF-MEMS: From the early days of microsystems to modern RF-MEMS passives},
+  year      = {2017},
+  isbn      = {978-0-7503-1545-6},
+  pages     = {1-1 to 1-39},
+  series    = {2053-2563},
+  type      = {Book Chapter},
+  abstract  = {This chapter develops comprehensive discussion on MEMS (MicroElectroMechanical-Systems) technologies. First, the inception of the concept of microsystems is analysed with reference to the evolution of semiconductor technologies, highlighting common features as well as their differentiation. The most common technology platforms for microsystems manufacturing are reported. Examples of consolidated (market) exploitations of MEMS sensors and actuators are also provided. Then, RF-MEMS, i.e. MEMS for Radio Frequency passives, are introduced, explaining their working principles and listing diverse actuation mechanisms. Subsequently, the most common categories of RF-MEMS devices are introduced, focusing both on simple components, as well as on complex high-order reconfigurable networks.},
+  doi       = {10.1088/978-0-7503-1545-6ch1},
+  url       = {http://dx.doi.org/10.1088/978-0-7503-1545-6ch1},
+}
+
+@Article{Kurt2007,
+  author = {Kurt Seifert and Oscar Camacho},
+  title  = {Implementing Positioning Algorithms UsingAccelerometers},
+  year   = {2007},
+}
+
+@Article{Ravi2005,
+  author    = {N Ravi and N Dandekar and P Mysore and M Littman},
+  title     = {Activity recognition from accelerometer data},
+  year      = {2005},
+  pages     = {1541--1546},
+  booktitle = {IAAI’05: Proceedings of the 17th conference on innovative applications of artificial intelligence},
+  publisher = {AAAI Press},
+}
+
+@Article{Samara1988,
+  author  = {B Samara and R Randles},
+  journal = {Communications in Statistics - Theory and Methods},
+  title   = {A test for correlation based on Kendall’s tau},
+  year    = {1988},
+  number  = {9},
+  pages   = {3191--3205},
+  volume  = {17},
+  doi     = {10.1080/03610928808829798},
+}
+
+@Article{Croux2010,
+  author    = {Christophe Croux and Catherine Dehon},
+  journal   = {Statistical Methods {\&} Applications},
+  title     = {Influence functions of the Spearman and Kendall correlation measures},
+  year      = {2010},
+  month     = may,
+  number    = {4},
+  pages     = {497--515},
+  volume    = {19},
+  doi       = {10.1007/s10260-010-0142-z},
+  publisher = {Springer Science and Business Media {LLC}},
+}
+
+@Article{Nham2008,
+  author  = {B Nham and K Siangliulue and S Yeung},
+  journal = {CS},
+  title   = {Predicting mode of transport from iphone accelerometer data},
+  year    = {2008},
+  volume  = {229},
+  address = {Stanford, California},
+}
+
+@Misc{stackExhanchangeDipTest,
+  author       = {T.A. (https://stats.stackexchange.com/users/80090/t-a)},
+  howpublished = {Cross Validated},
+  note         = {URL:https://stats.stackexchange.com/q/157568 (version: 2015-06-18)},
+  title        = {Interpretation of Hartigans' dip test},
+  eprint       = {https://stats.stackexchange.com/q/157568},
+  url          = {https://stats.stackexchange.com/q/157568},
+}
+
+@Article{Hartigan1985,
+  author    = {J. A. Hartigan and P. M. Hartigan},
+  journal   = {The Annals of Statistics},
+  title     = {The Dip Test of Unimodality},
+  year      = {1985},
+  month     = {mar},
+  number    = {1},
+  pages     = {70--84},
+  volume    = {13},
+  doi       = {10.1214/aos/1176346577},
+  publisher = {Institute of Mathematical Statistics},
+}
+
+@Misc{stackEchangeCL,
+  author       = {Peter Flom - Reinstate Monica (https://stats.stackexchange.com/users/686/peter-flom-reinstate-monica)},
+  howpublished = {Cross Validated},
+  note         = {URL:https://stats.stackexchange.com/q/38095 (version: 2013-10-20)},
+  title        = {How to deal with high correlation among predictors in multiple regression?},
+  eprint       = {https://stats.stackexchange.com/q/38095},
+  url          = {https://stats.stackexchange.com/q/38095},
+}
+
+@Misc{Cemer1Feb.2011,
+  author = {Izudin Cemer},
+  title  = {Noise Measurement.” FierceElectronics},
+  year   = {1 Feb. 2011},
+}
+
+@Misc{xue2018understanding,
+  author        = {Li Xue and Si Xiandong and Nie Lanshun and Li Jiazhen and Ding Renjie and Zhan Dechen and Chu Dianhui},
+  title         = {Understanding and Improving Deep Neural Network for Activity Recognition},
+  year          = {2018},
+  archiveprefix = {arXiv},
+  eprint        = {1805.07020},
+  primaryclass  = {cs.CV},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

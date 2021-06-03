@@ -1,5 +1,5 @@
 # Feature extraction and model making - Felix Slothower
-setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/')
+# setwd('C:/Users/felix/Documents/UCI Bullshit Forms/CLASSES/MAE 195 (Machine Learning)/Actitivty_Recognition/code/Activity_Recognition/')
 
 windowsFonts(`LM Roman 10` = windowsFont('LM Roman 10'))
 
